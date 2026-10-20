@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Super Bloop – for Discord</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --ps: #0070d1;
+      --psd: #003087;
+      --psx: #00205f;
+      --sun: #ffd23f;
+      --pink: #ff6fb5;
+      --red: #ff3b3b;
+      --red-dark: #b80000;
+      --card: #fff;
+      --ink: #06215c;
+      --soft: #e8f1ff;
+      --line: #003087;
+      box-sizing: border-box;
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      color-scheme: light dark;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --card: #0d2a6e;
+        --ink: #eaf2ff;
+        --soft: #14378a;
+        --line: #7db4ff;
+      }
+    }
+
+    :root[data-theme="dark"] {
+      --card: #0d2a6e;
+      --ink: #eaf2ff;
+      --soft: #14378a;
+      --line: #7db4ff;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 80px);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Fredoka", "Baloo 2", "Comic Sans MS", system-ui, sans-serif;
+      color: #fff;
+      overflow-x: hidden;
+      background: radial-gradient(circle at 15% 10%, #2f9bff 0, transparent 40%),
+                  radial-gradient(circle at 90% 30%, #0050c8 0, transparent 45%),
+                  linear-gradient(180deg, #0070d1, #003087 60%, #00205f);
+      background-color: #003087;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(rgba(255, 255, 255, .14) 2px, transparent 2.5px);
+      background-size: 34px 34px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0 0 auto;
+      height: env(safe-area-inset-top, 0px);
+      background: #0070d1;
+      z-index: 30;
+    }
+
+    main, header, footer {
+      position: relative;
+      z-index: 1;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .nav {
+      position: sticky;
+      top: env(safe-area-inset-top, 0px);
+      z-index: 20;
+      background: rgba(0, 48, 135, .9);
+      backdrop-filter: blur(8px);
+      border-bottom: 4px solid #fff;
+    }
+
+    .nav .wrap {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      height: 68px;
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 28px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-right: auto;
+      text-shadow: 0 3px 0 var(--psx);
+    }
+
+    .logo span {
+      display: inline-block;
+      animation: wob 2.4s ease-in-out infinite;
+    }
+
+    .nav nav {
+      display: flex;
+      gap: 6px;
+    }
+
+    .nav nav a {
+      padding: 8px 14px;
+      border-radius: 99px;
+      font-weight: 600;
+    }
+
+    .nav nav a:hover {
+      background: rgba(255, 255, 255, .18);
+    }
+
+    @media(max-width: 760px) {
+      .nav nav {
+        display: none;
+      }
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font: inherit;
+      font-weight: 700;
+      font-size: 18px;
+      padding: 12px 24px;
+      border-radius: 99px;
+      border: 4px solid var(--psx);
+      cursor: pointer;
+      color: var(--psx);
+      background: var(--sun);
+      box-shadow: 0 6px 0 var(--psx);
+      transition: transform .12s, box-shadow .12s;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px) rotate(-1.5deg);
+      box-shadow: 0 9px 0 var(--psx);
+    }
+
+    .btn:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 var(--psx);
+    }
+
+    .btn.discord {
+      background: #5865f2;
+      color: #fff;
+    }
+
+    .btn.pink {
+      background: var(--pink);
+    }
+
+    .btn.red {
+      background: var(--red);
+      color: #fff;
+      border-color: var(--red-dark);
+      box-shadow: 0 6px 0 var(--red-dark);
+    }
+
+    .btn.red:hover {
+      box-shadow: 0 9px 0 var(--red-dark);
+    }
+
+    .btn.red:active {
+      box-shadow: 0 2px 0 var(--red-dark);
+    }
+
+    .btn.paypal {
+      background: #0070ba;
+      color: #fff;
+      border-color: #003087;
+      box-shadow: 0 6px 0 #003087;
+    }
+
+    .btn.paypal:hover {
+      box-shadow: 0 9px 0 #003087;
+    }
+
+    .btn.paypal:active {
+      box-shadow: 0 2px 0 #003087;
+    }
+
+    .btn.small {
+      font-size: 15px;
+      padding: 8px 16px;
+      box-shadow: 0 4px 0 var(--psx);
+    }
+
+    .hero {
+      padding: 44px 0 30px;
+    }
+
+    .hero .wrap {
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      gap: 20px;
+      align-items: center;
+    }
+
+    @media(max-width: 860px) {
+      .hero .wrap {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      .hero .cta {
+        justify-content: center;
+      }
+    }
+
+    .pill {
+      display: inline-block;
+      background: #fff;
+      color: var(--psd);
+      font-weight: 700;
+      padding: 6px 16px;
+      border-radius: 99px;
+      transform: rotate(-3deg);
+      box-shadow: 0 4px 0 var(--psx);
+    }
+
+    .pill.red-accent {
+      background: var(--red);
+      color: #fff;
+      border: 2px solid var(--red-dark);
+      box-shadow: 0 4px 0 var(--red-dark);
+    }
+
+    h1 {
+      font-size: clamp(40px, 7vw, 76px);
+      line-height: 1;
+      margin: 16px 0;
+      text-shadow: 0 5px 0 var(--psx), 0 10px 20px rgba(0, 0, 0, .25);
+    }
+
+    h1 em {
+      font-style: normal;
+      color: var(--sun);
+    }
+
+    h1 .red-text {
+      color: var(--red);
+      text-shadow: 0 5px 0 var(--red-dark), 0 10px 20px rgba(0, 0, 0, .25);
+    }
+
+    .lead {
+      font-size: 20px;
+      max-width: 520px;
+      margin: 0 auto 24px;
+      opacity: .95;
+    }
+
+    .hero .lead {
+      margin-left: 0;
+    }
+
+    @media(max-width: 860px) {
+      .hero .lead {
+        margin-left: auto;
+      }
+    }
+
+    .cta {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .stage {
+      position: relative;
+    }
+
+    .stage canvas {
+      width: 100%;
+      height: min(46vw, 420px);
+      min-height: 260px;
+      display: block;
+      filter: drop-shadow(0 18px 24px rgba(0, 20, 90, .45));
+    }
+
+    .sticker {
+      position: absolute;
+      right: 2%;
+      top: 0;
+      width: 118px;
+      height: 118px;
+      border-radius: 50%;
+      background: var(--sun);
+      color: var(--psx);
+      border: 5px solid var(--psx);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      font-weight: 700;
+      line-height: 1;
+      transform: rotate(14deg);
+      box-shadow: 0 7px 0 var(--psx);
+      animation: wob 2s ease-in-out infinite;
+    }
+
+    .sticker b {
+      font-size: 40px;
+      display: block;
+    }
+
+    .sticker small {
+      font-size: 13px;
+    }
+
+    .sticker.red-sticker {
+      background: var(--red);
+      color: #fff;
+      border-color: var(--red-dark);
+      box-shadow: 0 7px 0 var(--red-dark);
+    }
+
+    @keyframes wob {
+      0%, 100% { transform: rotate(-6deg); }
+      50% { transform: rotate(6deg); }
+    }
+
+    .sticker {
+      animation-name: wob2;
+    }
+
+    @keyframes wob2 {
+      0%, 100% { transform: rotate(8deg) scale(1); }
+      50% { transform: rotate(18deg) scale(1.07); }
+    }
+
+    section {
+      padding: 56px 0;
+    }
+
+    h2 {
+      font-size: clamp(30px, 5vw, 48px);
+      margin: 0 0 8px;
+      text-align: center;
+      text-shadow: 0 4px 0 var(--psx);
+    }
+
+    h2 .red-text {
+      color: var(--red);
+      text-shadow: 0 4px 0 var(--red-dark);
+    }
+
+    .sub {
+      text-align: center;
+      font-size: 19px;
+      margin: 0 auto 34px;
+      max-width: 600px;
+      opacity: .95;
+    }
+
+    .grid {
+      display: grid;
+      gap: 22px;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    }
+
+    .card {
+      background: var(--card);
+      color: var(--ink);
+      border: 4px solid var(--line);
+      border-radius: 28px;
+      padding: 22px;
+      box-shadow: 0 8px 0 var(--psx);
+      transition: transform .15s;
+    }
+
+    .card:hover {
+      transform: translateY(-6px) rotate(-.8deg);
+    }
+
+    .card.red-accent {
+      border-color: var(--red);
+      box-shadow: 0 8px 0 var(--red-dark);
+    }
+
+    .card .ic {
+      font-size: 46px;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .card h3 {
+      margin: 0 0 6px;
+      font-size: 24px;
+    }
+
+    .card p {
+      margin: 0;
+      font-size: 17px;
+      opacity: .85;
+    }
+
+    .prod {
+      text-align: center;
+      position: relative;
+    }
+
+    .prod.hot {
+      border-color: var(--sun);
+      transform: scale(1.03);
+    }
+
+    .prod.hot:hover {
+      transform: scale(1.03) translateY(-6px);
+    }
+
+    .prod .tag {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%) rotate(-3deg);
+      background: var(--pink);
+      color: #fff;
+      border: 3px solid var(--psx);
+      padding: 2px 14px;
+      border-radius: 99px;
+      font-weight: 700;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .prod .tag.red-tag {
+      background: var(--red);
+      border-color: var(--red-dark);
+    }
+
+    .mini {
+      width: 100%;
+      height: 150px;
+      display: block;
+      margin: 6px 0;
+    }
+
+    .price {
+      font-size: 46px;
+      font-weight: 700;
+      color: var(--ps);
+      margin: 4px 0;
+    }
+
+    @media(prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) .price {
+        color: var(--sun);
+      }
+    }
+
+    :root[data-theme="dark"] .price {
+      color: var(--sun);
+    }
+
+    .prod p {
+      min-height: 52px;
+      margin-bottom: 14px;
+    }
+
+    .steps {
+      counter-reset: s;
+      display: grid;
+      gap: 14px;
+      max-width: 680px;
+      margin: 0 auto 28px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .steps li {
+      counter-increment: s;
+      background: var(--card);
+      color: var(--ink);
+      border: 4px solid var(--line);
+      border-radius: 22px;
+      padding: 14px 18px 14px 70px;
+      position: relative;
+      font-size: 18px;
+      font-weight: 500;
+      box-shadow: 0 6px 0 var(--psx);
+    }
+
+    .steps li::before {
+      content: counter(s);
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--sun);
+      color: var(--psx);
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 22px;
+      border: 3px solid var(--psx);
+    }
+
+    .steps li.red-step {
+      border-color: var(--red);
+      box-shadow: 0 6px 0 var(--red-dark);
+    }
+
+    .steps li.red-step::before {
+      background: var(--red);
+      color: #fff;
+      border-color: var(--red-dark);
+    }
+
+    .center {
+      display: flex;
+      justify-content: center;
+    }
+
+    .chips {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      background: #fff;
+      color: var(--psd);
+      border: 4px solid var(--psx);
+      border-radius: 24px;
+      padding: 14px 26px;
+      font-weight: 700;
+      font-size: 22px;
+      box-shadow: 0 6px 0 var(--psx);
+      animation: bob 3s ease-in-out infinite;
+    }
+
+    .chip:nth-child(2) {
+      animation-delay: .4s;
+    }
+
+    .chip:nth-child(3) {
+      animation-delay: .8s;
+    }
+
+    .chip.red-chip {
+      border-color: var(--red);
+      box-shadow: 0 6px 0 var(--red-dark);
+    }
+
+    .chip.paypal-chip {
+      border-color: #0070ba;
+      box-shadow: 0 6px 0 #003087;
+    }
+
+    @keyframes bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .social {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .soc {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #fff;
+      color: var(--psd);
+      border: 4px solid var(--psx);
+      padding: 8px 18px 8px 8px;
+      border-radius: 99px;
+      font-weight: 700;
+      box-shadow: 0 5px 0 var(--psx);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 16px;
+      transition: transform .12s;
+    }
+
+    .soc:hover {
+      transform: translateY(-4px) rotate(-2deg);
+    }
+
+    .soc i {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-style: normal;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .soc.red-soc {
+      border-color: var(--red);
+      box-shadow: 0 5px 0 var(--red-dark);
+    }
+
+    footer {
+      text-align: center;
+      padding: 34px 20px 46px;
+      border-top: 4px solid #fff;
+      background: rgba(0, 32, 95, .6);
+    }
+
+    footer p {
+      margin: 6px 0;
+      opacity: .9;
+    }
+
+    footer .red-text {
+      color: var(--red);
+    }
+
+    .bub {
+      position: fixed;
+      bottom: -60px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .22);
+      border: 2px solid rgba(255, 255, 255, .5);
+      animation: rise linear infinite;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .bub.red-bub {
+      background: rgba(255, 59, 59, .25);
+      border-color: rgba(255, 59, 59, .6);
+    }
+
+    @keyframes rise {
+      to { transform: translateY(-120vh) translateX(30px); }
+    }
+
+    .ov {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 16, 60, .7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 50;
+      overflow-y: auto;
+    }
+
+    .ov.on {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--card);
+      color: var(--ink);
+      border: 5px solid var(--line);
+      border-radius: 32px;
+      max-width: 520px;
+      width: 100%;
+      padding: 26px;
+      box-shadow: 0 10px 0 var(--psx);
+      position: relative;
+      animation: pop .3s cubic-bezier(.3, 1.6, .5, 1);
+    }
+
+    .modal.red-modal {
+      border-color: var(--red);
+      box-shadow: 0 10px 0 var(--red-dark);
+    }
+
+    @keyframes pop {
+      from { transform: scale(.6); opacity: 0; }
+    }
+
+    .x {
+      position: absolute;
+      right: 14px;
+      top: 14px;
+      border: 0;
+      background: var(--soft);
+      color: var(--ink);
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      font-size: 20px;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 700;
+    }
+
+    .x.red-x {
+      background: var(--red);
+      color: #fff;
+    }
+
+    .modal h3 {
+      margin: 0 0 4px;
+      font-size: 28px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin: 16px 0;
+      flex-wrap: wrap;
+    }
+
+    .tab {
+      flex: 1;
+      min-width: 110px;
+      padding: 10px;
+      border-radius: 16px;
+      border: 3px solid var(--line);
+      background: var(--soft);
+      color: var(--ink);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .tab.on {
+      background: var(--ps);
+      color: #fff;
+      border-color: var(--psx);
+    }
+
+    .tab.red-tab.on {
+      background: var(--red);
+      border-color: var(--red-dark);
+    }
+
+    .tab.paypal-tab.on {
+      background: #0070ba;
+      border-color: #003087;
+    }
+
+    .panel {
+      background: var(--soft);
+      border-radius: 20px;
+      padding: 16px;
+      font-size: 17px;
+      margin-bottom: 14px;
+    }
+
+    .panel.red-panel {
+      border: 3px solid var(--red);
+    }
+
+    .panel.paypal-panel {
+      border: 3px solid #0070ba;
+      background: #e8f4fd;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) .panel.paypal-panel {
+        background: #0a1a3a;
+      }
+    }
+
+    :root[data-theme="dark"] .panel.paypal-panel {
+      background: #0a1a3a;
+    }
+
+    .panel p {
+      margin: 0 0 10px;
+    }
+
+    .copy {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      background: var(--card);
+      border: 3px dashed var(--line);
+      border-radius: 14px;
+      padding: 8px 10px;
+      margin: 8px 0;
+      word-break: break-all;
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    .copy span {
+      flex: 1;
+    }
+
+    .modal input {
+      width: 100%;
+      font: inherit;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 3px solid var(--line);
+      background: var(--card);
+      color: var(--ink);
+      margin-bottom: 12px;
+    }
+
+    .modal input.red-input {
+      border-color: var(--red);
+    }
+
+    .modal input.paypal-input {
+      border-color: #0070ba;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+      transform: translate(-50%, 40px);
+      background: var(--sun);
+      color: var(--psx);
+      border: 4px solid var(--psx);
+      padding: 10px 20px;
+      border-radius: 99px;
+      font-weight: 700;
+      opacity: 0;
+      transition: .3s;
+      z-index: 90;
+      max-width: 92vw;
+      text-align: center;
+    }
+
+    .toast.on {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    .toast.red-toast {
+      background: var(--red);
+      color: #fff;
+      border-color: var(--red-dark);
+    }
+
+    .toast.paypal-toast {
+      background: #0070ba;
+      color: #fff;
+      border-color: #003087;
+    }
+
+    @media(prefers-reduced-motion: reduce) {
+      * {
+        animation: none !important;
+      }
+    }
+
+    .soc i.fa-brands,
+    .soc i.fa-solid {
+      font-size: 22px;
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      background: transparent !important;
+      color: #fff;
+    }
+
+    .soc i.fa-facebook-f { color: #1877f2; background: #fff !important; }
+    .soc i.fa-telegram { color: #26a5e4; background: #fff !important; }
+    .soc i.fa-whatsapp { color: #25d366; background: #fff !important; }
+    .soc i.fa-pinterest { color: #e60023; background: #fff !important; }
+    .soc i.fa-google { color: #00897b; background: #fff !important; }
+    .soc i.fa-slack { color: #611f69; background: #fff !important; }
+    .soc i.fa-signal-messenger { color: #3a76f0; background: #fff !important; }
+    .soc i.fa-github { color: #333; background: #fff !important; }
+    .soc i.fa-instagram { color: #e4405f; background: #fff !important; }
+
+    .paypal-hero {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      background: linear-gradient(135deg, #0070ba, #003087);
+      border: 5px solid #fff;
+      border-radius: 28px;
+      padding: 24px 32px;
+      max-width: 700px;
+      margin: 0 auto 20px;
+      box-shadow: 0 10px 0 #001a4d;
+      flex-wrap: wrap;
+      text-align: center;
+    }
+
+    .paypal-hero .pp-icon {
+      font-size: 60px;
+      color: #fff;
+      filter: drop-shadow(0 4px 0 #001a4d);
+    }
+
+    .paypal-hero .pp-text {
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    .paypal-hero .pp-text b {
+      color: var(--sun);
+    }
+
+    .paypal-hero .btn.paypal {
+      font-size: 22px;
+      padding: 14px 32px;
+    }
+
+    .paypal-quick {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .paypal-quick a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #fff;
+      color: #003087;
+      border: 3px solid #0070ba;
+      padding: 10px 22px;
+      border-radius: 99px;
+      font-weight: 700;
+      font-size: 17px;
+      box-shadow: 0 5px 0 #0070ba;
+      transition: transform .12s;
+    }
+
+    .paypal-quick a:hover {
+      transform: translateY(-3px) rotate(-1deg);
+    }
+
+    .paypal-quick a i {
+      color: #0070ba;
+      font-size: 22px;
+    }
+  </style>
+</head>
+<body>
+<header class="nav"><div class="wrap">
+  <a class="logo" href="#top"><span></span> Super Bloop</a>
+  <nav><a href="#features">Powers</a><a href="#shop">Shop</a><a href="#pay">PayPal</a><a href="https://discord.com/oauth2/authorize?client_id=1562109358387757233">Discord</a><a href="#share">Share</a></nav>
+  <a class="btn discord small" href="https://discord.com/oauth2/authorize?client_id=1562109358387757233" data-discord>Add to Discord</a>
+</div></header>
+
+<main id="top">
+<div class="hero"><div class="wrap">
+  <div>
+    <span class="pill red-accent">🛡️ A cyber tool by Accurate Cyber Defense</span>
+    <h1>Meet <em>Super Bloop</em>, the <span class="red-text">shark</span> that chomps cyber baddies!</h1>
+    <p class="lead">Super Bloop is a cute but super-snappy cyber tool that guards your Discord server. Grab your own Bloop from just <b>£5</b>!</p>
+    <div class="cta">
+      <a class="btn red" href="https://www.paypal.com/paypalme/accuratecyberdefense" target="_blank" rel="noopener">🛒 Get Bloop – £5</a>
+      <a class="btn paypal" href="https://www.paypal.com/paypalme/accuratecyberdefense" target="_blank" rel="noopener"><i class="fa-brands fa-paypal"></i> Pay with PayPal</a>
+      <a class="btn discord" href="https://discord.com/oauth2/authorize?client_id=1562109358387757233" data-discord>➕ Add to Discord</a>
+    </div>
+  </div>
+  <div class="stage">
+    <canvas class="bloop" id="hero" aria-label="Animated Super Bloop mascot"></canvas>
+    <div class="sticker red-sticker"><div><small>only</small><b>£5</b><small>to start!</small></div></div>
+  </div>
+</div></div>
+
+<section id="features"><div class="wrap">
+  <h2>Super Bloop’s <span class="red-text">Powers</span></h2>
+  <p class="sub">Small shark. Big bite. Here is how Super Bloop keeps your community safe and happy.</p>
+  <div class="grid">
+    <div class="card red-accent"><span class="ic">🔗</span><h3>Link Chomper</h3><p>Sniffs out sketchy links and chomps them before anyone clicks.</p></div>
+    <div class="card"><span class="ic">🚨</span><h3>Raid Shield</h3><p>Spots sudden floods of strangers and helps lock the doors fast.</p></div>
+    <div class="card red-accent"><span class="ic">🕵️</span><h3>Scam Sniffer</h3><p>Warns your friends about fake giveaways and phishing tricks.</p></div>
+    <div class="card"><span class="ic">🎮</span><h3>Easy Commands</h3><p>Simple, friendly commands that anyone in your server can learn.</p></div>
+  </div>
+</div></section>
+
+<section id="shop"><div class="wrap">
+  <h2>Pick Your <span class="red-text">Super Bloop!</span></h2>
+  <p class="sub">Every Bloop is a tiny bodyguard. Choose the size that fits your server.</p>
+  <div class="grid" id="products"></div>
+</div></section>
+
+<!-- PROMINENT PAYPAL SECTION -->
+<section id="pay"><div class="wrap">
+  <h2>Pay with <span class="red-text">PayPal</span> – Fast & Safe</h2>
+  <p class="sub">Use the button below or scan to pay instantly. PayPal handles your card or balance securely.</p>
+
+  <div class="paypal-hero">
+    <i class="fa-brands fa-paypal pp-icon"></i>
+    <div class="pp-text">
+      Pay <b>£5 / £12 / £25</b> directly with PayPal<br>
+      <span style="font-size:15px;opacity:.85;">Secure · No account needed · Buyer protection</span>
+    </div>
+    <a class="btn paypal" href="https://www.paypal.com/paypalme/accuratecyberdefense" id="paypal-hero-link" target="_blank" rel="noopener">
+      <i class="fa-brands fa-paypal"></i> Pay Now
+    </a>
+  </div>
+
+  <div class="paypal-quick">
+    <a href="https://www.paypal.com/paypalme/accuratecyberdefense" target="_blank" rel="noopener"><i class="fa-brands fa-paypal"></i> Baby Bloop – £5</a>
+    <a href="https://www.paypal.com/paypalme/accuratecyberdefense" target="_blank" rel="noopener"><i class="fa-brands fa-paypal"></i> Big Bloop – £12</a>
+    <a href="https://www.paypal.com/paypalme/accuratecyberdefense" target="_blank" rel="noopener"><i class="fa-brands fa-paypal"></i> Mega Bloop – £25</a>
+  </div>
+
+  <p class="sub" style="margin-top:30px;">Prefer another way? We also accept Airtel Money & Bitcoin.</p>
+  <div class="chips">
+    <div class="chip paypal-chip"><i class="fa-brands fa-paypal" style="margin-right:8px;"></i> PayPal</div>
+    <div class="chip red-chip"><i class="fa-solid fa-mobile-screen" style="margin-right:8px;"></i> Airtel Money</div>
+    <div class="chip"><i class="fa-brands fa-bitcoin" style="margin-right:8px;"></i> Bitcoin</div>
+  </div>
+</div></section>
+
+<section id="discord"><div class="wrap">
+  <h2>Add Super Bloop to Your Server</h2>
+  <p class="sub">It takes less than a minute. Seriously!</p>
+  <ol class="steps">
+    <li class="red-step">Pick your Super Bloop above and pay with PayPal, Airtel Money or Bitcoin.</li>
+    <li>Press the big purple button to invite Super Bloop to your Discord server.</li>
+    <li>Choose your server, tap Authorise, and watch Super Bloop start chomping!</li>
+  </ol>
+  <div class="center"><a class="btn discord" href="https://discord.com/oauth2/authorize?client_id=1562109358387757233" data-discord style="font-size:22px">➕ Add Super Bloop to your Discord server</a></div>
+</div></section>
+
+<section id="share"><div class="wrap">
+  <h2>Tell Your <span class="red-text">Friends!</span></h2>
+  <p class="sub">Share Super Bloop with your crew, or follow us on your favourite app.</p>
+  <div class="social" id="social"></div>
+</div></section>
+</main>
+
+<footer>
+  <p><b>Super Bloop</b> · a cyber tool by Accurate Cyber Defense (ACDN)</p>
+  <p>Made in Malawi 🇲🇼 to keep communities <span class="red-text">safe online</span>.</p>
+</footer>
+
+<div class="ov" id="ov"><div class="modal red-modal" role="dialog" aria-modal="true">
+  <button class="x red-x" id="close" aria-label="Close">✕</button>
+  <h3 id="mtitle">Checkout</h3>
+  <div id="msum" style="font-size:18px;font-weight:500"></div>
+  <div class="tabs" id="tabs">
+    <button class="tab paypal-tab" data-m="paypal"><i class="fa-brands fa-paypal"></i> PayPal</button>
+    <button class="tab" data-m="airtel"><i class="fa-solid fa-mobile-screen"></i> Airtel Money</button>
+    <button class="tab red-tab" data-m="bitcoin"><i class="fa-brands fa-bitcoin"></i> Bitcoin</button>
+  </div>
+  <div class="panel" id="panel"></div>
+  <input id="srv" class="red-input" placeholder="Your Discord server name" maxlength="60">
+  <button class="btn red" id="proof" style="width:100%">✅ I have paid – send proof</button>
+</div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ====== EDIT THESE SETTINGS ====== */
+var CONFIG = {
+  discordClientId: "1562109358387757233",
+  paypalMe: "https://www.paypal.com/paypalme/accuratecyberdefense",
+  airtelNumber: "+265(0)988061969",
+  airtelName: "Ian Carter Kulani",
+  btcAddress: "YOUR_BITCOIN_ADDRESS",
+  whatsapp: "265988061969"
+};
+var PRODUCTS = [
+  {id:"baby", name:"Baby Bloop", price:5,  tag:"Starter",       desc:"1 Discord server with link chomping and basic guard.", hue:0,   scale:.8},
+  {id:"big",  name:"Big Bloop",  price:12, tag:"Most loved ⭐", desc:"3 servers with raid shield and scam sniffer.",         hue:-25, scale:.95, hot:true},
+  {id:"mega", name:"Mega Bloop", price:25, tag:"Super chomp",   desc:"10 servers, priority help and future tricks.",         hue:25,  scale:1.1}
+];
+/* ================================== */
+var $ = function(s){return document.querySelector(s)};
+var set = function(v){return v && v.indexOf("YOUR_") !== 0};
+var toastT;
+function toast(m, cls){var t=$("#toast");t.textContent=m;t.className="toast on"+(cls?" "+cls:"");clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove("on")},3200)}
+function copy(txt){
+  var done=function(){toast("Copied! 📋")};
+  try{navigator.clipboard.writeText(txt).then(done,function(){fb()})}catch(e){fb()}
+  function fb(){var a=document.createElement("textarea");a.value=txt;document.body.appendChild(a);a.select();try{document.execCommand("copy");done()}catch(e){toast("Please copy it by hand")}a.remove()}
+}
+
+/* ---- Products ---- */
+$("#products").innerHTML = PRODUCTS.map(function(p){
+  return '<div class="card prod'+(p.hot?' hot':'')+'"><span class="tag'+(p.hot?' red-tag':'')+'">'+p.tag+'</span>'+
+  '<canvas class="mini bloop" data-hue="'+p.hue+'" data-scale="'+p.scale+'"></canvas>'+
+  '<h3>'+p.name+'</h3><div class="price">£'+p.price+'</div><p>'+p.desc+'</p>'+
+  '<button class="btn'+(p.hot?' red':'')+'" data-buy="'+p.id+'">🛒 Buy Now</button></div>';
+}).join("");
+
+/* ---- PayPal hero link ---- */
+(function(){
+  var link = document.getElementById('paypal-hero-link');
+  link.href = "https://www.paypal.com/paypalme/accuratecyberdefense";
+  link.target = "_blank";
+  link.rel = "noopener";
+})();
+
+/* ---- Discord ---- */
+document.querySelectorAll("[data-discord]").forEach(function(a){
+  a.addEventListener("click",function(e){
+    e.preventDefault();
+    window.open("https://discord.com/oauth2/authorize?client_id=1562109358387757233&scope=bot%20applications.commands","_blank","noopener");
+  });
+});
+
+/* ---- Checkout ---- */
+var sel=null, method="paypal";
+function box(label,val){return '<div class="copy"><span>'+val+'</span><button class="btn small" data-copy="'+val+'" style="padding:6px 12px">Copy</button></div>'}
+function render(){
+  document.querySelectorAll(".tab").forEach(function(t){t.classList.toggle("on",t.dataset.m===method)});
+  var P=$("#panel"),pr=sel.price;
+  P.className = "panel" + (method==="paypal"?" paypal-panel":(method==="bitcoin"?" red-panel":""));
+  if(method==="paypal"){
+    P.innerHTML='<p>Pay <b>£'+pr+'</b> safely with PayPal. Your PayPal handles the card or balance for you.</p><button class="btn small paypal" id="pp"><i class="fa-brands fa-paypal"></i> Pay £'+pr+' with PayPal</button>';
+    $("#pp").onclick=function(){
+      window.open("https://www.paypal.com/paypalme/accuratecyberdefense/" + pr + "GBP","_blank","noopener");
+    };
+  } else if(method==="airtel"){
+    P.innerHTML='<p>Send the Airtel Money amount that equals <b>£'+pr+'</b> at today’s rate to:</p><p><b>'+CONFIG.airtelName+'</b></p>'+box("n",CONFIG.airtelNumber)+'<p style="font-size:15px;margin-top:8px">Use the reference <b>BLOOP-'+sel.id.toUpperCase()+'</b>, then send us your proof below.</p>';
+  } else {
+    P.innerHTML='<p>Send the Bitcoin amount that equals <b>£'+pr+'</b> to this address:</p>'+box("b",CONFIG.btcAddress)+'<p style="font-size:15px;margin-top:8px">Only send Bitcoin (BTC) to this address. Then send us your proof below.</p>';
+  }
+}
+function openCk(id){
+  sel=PRODUCTS.filter(function(p){return p.id===id})[0];method="paypal";
+  $("#mtitle").textContent="Get "+sel.name+" ";
+  $("#msum").innerHTML='Total: <b style="color:var(--red);font-size:26px">£'+sel.price+'</b>';
+  render();$("#ov").classList.add("on");
+}
+function closeCk(){$("#ov").classList.remove("on")}
+document.addEventListener("click",function(e){
+  var b=e.target.closest("[data-buy]");if(b)openCk(b.dataset.buy);
+  var c=e.target.closest("[data-copy]");if(c){copy(c.dataset.copy)}
+  var t=e.target.closest(".tab");if(t){method=t.dataset.m;render()}
+  if(e.target.id==="ov"||e.target.id==="close")closeCk();
+});
+document.addEventListener("keydown",function(e){if(e.key==="Escape")closeCk()});
+$("#proof").onclick=function(){
+  var m="Hi! I paid for "+sel.name+" (£"+sel.price+") by "+method+". Discord server: "+($("#srv").value||"(not given)");
+  window.open("https://wa.me/"+CONFIG.whatsapp+"?text="+encodeURIComponent(m),"_blank","noopener");
+};
+
+/* ---- Social ---- */
+var URLP = location.href.split("#")[0], TXT = "Meet Super Bloop, the cute cyber shark for Discord servers! ";
+var E=encodeURIComponent;
+var SOCIALS=[
+ {n:"Facebook", icon:"fa-brands fa-facebook-f", u:"https://web.facebook.com/profile.php?id=61595369825845/sharer.php?u="+E(URLP)},
+ {n:"Instagram", icon:"fa-brands fa-instagram", u:"https://www.instagram.com/accuratecyberdefense/", cp:1},
+ {n:"Telegram", icon:"fa-brands fa-telegram", u:"https://t.me/share/url?url="+E(URLP)+"&text="+E(TXT)},
+ {n:"WhatsApp", icon:"fa-brands fa-whatsapp", u:"https://wa.me/?text="+E(TXT+" "+URLP)},
+ {n:"Pinterest", icon:"fa-brands fa-pinterest", u:"https://www.pinterest.com/accuratecyberdefense/?url="+E(URLP)+"&description="+E(TXT)},
+ {n:"GitHub", icon:"fa-brands fa-github", u:"https://github.com/Accurate-Cyber-Defense/", cp:1},
+ {n:"Google Chat", icon:"fa-brands fa-google", u:"https://chat.google.com/", cp:1},
+ {n:"Slack", icon:"fa-brands fa-slack", u:"https://slack.com/", cp:1},
+ {n:"Signal", icon:"fa-brands fa-signal-messenger", u:"https://signal.org/", cp:1}
+];
+$("#social").innerHTML=SOCIALS.map(function(s,k){
+  return '<button class="soc'+(s.n==="Instagram"||s.n==="GitHub"?' red-soc':'')+'" data-s="'+k+'"><i class="'+s.icon+'"></i>'+s.n+'</button>'
+}).join("");
+$("#social").addEventListener("click",function(e){
+  var b=e.target.closest(".soc");if(!b)return;var s=SOCIALS[b.dataset.s];
+  if(s.cp){copy(URLP);toast("Link copied – paste it in "+s.n+"! 💬")}
+  window.open(s.u,"_blank","noopener");
+});
+
+/* ---- Bubbles ---- */
+for(var i=0;i<18;i++){var b=document.createElement("span"),z=8+Math.random()*34;b.className="bub"+(i%4===0?" red-bub":"");
+ b.style.cssText="width:"+z+"px;height:"+z+"px;left:"+Math.random()*100+"%;animation-duration:"+(9+Math.random()*14)+"s;animation-delay:-"+Math.random()*20+"s";document.body.appendChild(b)}
+
+/* ---- Bloop canvas drawing ---- */
+var mx=0,my=0;
+addEventListener("pointermove",function(e){mx=(e.clientX/innerWidth-.5)*2;my=(e.clientY/innerHeight-.5)*2});
+function draw(c,W,H,t,k){
+  var PI=Math.PI,s=Math.min(W/470,H/340)*k;
+  c.translate(W/2,H*.52);c.scale(s,s);
+  var bob=Math.sin(t*2.2)*7,sq=1+Math.sin(t*4.4)*.025;
+  function poly(p,f){c.beginPath();p.forEach(function(q,i){i?c.lineTo(q[0],q[1]):c.moveTo(q[0],q[1])});c.closePath();c.fillStyle=f;c.fill()}
+  function ell(x,y,rx,ry,r){c.beginPath();c.ellipse(x,y,rx,ry,r||0,0,PI*2)}
+  c.fillStyle="rgba(0,30,120,.2)";ell(0,152,150-bob,16);c.fill();
+  c.translate(0,bob);c.scale(1/sq,sq);
+  var w=Math.sin(t*5)*10;
+  poly([[100,50],[240,90+w],[218,135+w],[140,128]],"#1a64ff");
+  poly([[100,50],[240,90+w],[190,100+w*.6]],"#5aa2ff");
+  poly([[40,-138],[128,-102],[96,-58]],"#2b78ff");
+  poly([[40,-138],[128,-102],[85,-100]],"#7bb4ff");
+  var g=c.createLinearGradient(-170,-110,170,120);g.addColorStop(0,"#fff");g.addColorStop(.55,"#dbe9ff");g.addColorStop(1,"#6aa4ff");
+  ell(0,-5,172,138);c.fillStyle=g;c.fill();c.lineWidth=5;c.strokeStyle="#2f80ff";c.stroke();
+  c.save();ell(0,-5,172,138);c.clip();
+  poly([[60,-140],[172,-20],[110,60]],"rgba(40,110,255,.28)");
+  poly([[110,60],[172,-20],[175,110]],"rgba(20,80,230,.38)");
+  poly([[-120,-100],[-40,-135],[-75,-60]],"rgba(255,255,255,.75)");
+  poly([[-170,10],[-120,-40],[-110,60]],"rgba(120,170,255,.25)");
+  c.restore();
+  var m=.65+.35*Math.sin(t*3.2),cy=46,rx=100,ry=22+46*m;
+  c.save();ell(0,cy,rx,ry);c.clip();
+  var mg=c.createLinearGradient(0,cy-ry,0,cy+ry);mg.addColorStop(0,"#020b4d");mg.addColorStop(.5,"#0a2fc7");mg.addColorStop(1,"#1d7bff");
+  c.fillStyle=mg;c.fillRect(-120,-100,240,260);
+  ell(0,cy+ry*.78,64,ry*.5);c.fillStyle="#4a98ff";c.fill();
+  c.restore();
+  ell(0,cy,rx,ry);c.lineWidth=9;c.strokeStyle="#e4efff";c.stroke();
+  [-1,1].forEach(function(d){for(var i=0;i<9;i++){
+    var th=(d<0?PI:0)+.32+i*(PI-.64)/8,dt=.13;
+    var px=rx*Math.cos(th),py=cy+ry*Math.sin(th);
+    poly([[rx*Math.cos(th-dt),cy+ry*Math.sin(th-dt)],[rx*Math.cos(th+dt),cy+ry*Math.sin(th+dt)],[px*.84,cy+(py-cy)*.5]],"#fff");}});
+  var bl=(t%4)>3.85?.12:1;
+  [-1,1].forEach(function(sx){
+    c.save();c.translate(sx*88,-74);c.scale(1,bl);
+    var eg=c.createRadialGradient(-10,-12,4,0,0,44);eg.addColorStop(0,"#6fc0ff");eg.addColorStop(.45,"#1550e8");eg.addColorStop(1,"#001a80");
+    ell(0,0,38,40);c.fillStyle=eg;c.fill();c.lineWidth=3;c.strokeStyle="#0b2a9c";c.stroke();
+    c.save();c.translate(mx*5,my*4);
+    c.beginPath();c.moveTo(0,-22);c.lineTo(17,-15);c.lineTo(17,4);c.quadraticCurveTo(17,17,0,25);c.quadraticCurveTo(-17,17,-17,4);c.lineTo(-17,-15);c.closePath();
+    c.fillStyle="#1747d6";c.fill();c.lineWidth=2.5;c.strokeStyle="#fff";c.stroke();
+    c.fillStyle="#fff";c.font="italic 700 11px Arial,sans-serif";c.textAlign="center";c.textBaseline="middle";c.fillText("ACD",0,1);
+    c.restore();
+    ell(-14,-22,10,6,-.5);c.fillStyle="rgba(255,255,255,.85)";c.fill();
+    c.restore();
+    ell(sx*92,-124-m*7,20,5,sx*.3);c.fillStyle="#0a1f6e";c.fill();
+  });
+  poly([[-10,-130],[12,-152],[28,-128]],"#ff3b3b");
+  poly([[-10,-130],[12,-152],[6,-126]],"#ff7a7a");
+  var fg=c.createLinearGradient(-44,-30,44,30);fg.addColorStop(0,"#fff");fg.addColorStop(.5,"#bcd7ff");fg.addColorStop(1,"#3f86ff");
+  var wv=Math.sin(t*4)*.15;
+  c.save();c.translate(-152,108);c.rotate(-.5+wv);ell(0,0,46,30);c.fillStyle=fg;c.fill();c.lineWidth=4;c.strokeStyle="#2f80ff";c.stroke();poly([[-30,-10],[10,-26],[0,10]],"rgba(255,255,255,.7)");c.restore();
+  c.save();c.translate(105,122);c.rotate(.5-wv);ell(0,0,44,32);c.fillStyle=fg;c.fill();c.lineWidth=4;c.strokeStyle="#2f80ff";c.stroke();poly([[-25,-14],[12,-28],[18,6]],"rgba(255,255,255,.7)");c.restore();
+  var a=.5+.5*Math.sin(t*3);c.globalAlpha=a;c.fillStyle="#fff";
+  c.beginPath();c.moveTo(-125,-128);c.lineTo(-120,-116);c.lineTo(-108,-112);c.lineTo(-120,-108);c.lineTo(-125,-96);c.lineTo(-130,-108);c.lineTo(-142,-112);c.lineTo(-130,-116);c.closePath();c.fill();
+  c.globalAlpha=1;
+  c.globalAlpha=.7+.3*Math.sin(t*5);c.fillStyle="#ff3b3b";
+  c.beginPath();c.moveTo(120,-110);c.lineTo(125,-100);c.lineTo(135,-95);c.lineTo(125,-90);c.lineTo(120,-80);c.lineTo(115,-90);c.lineTo(105,-95);c.lineTo(115,-100);c.closePath();c.fill();
+  c.globalAlpha=1;
+}
+var cvs=[].slice.call(document.querySelectorAll("canvas.bloop"));
+function frame(ms){
+  var t=ms/1000,d=Math.min(window.devicePixelRatio||1,2);
+  cvs.forEach(function(cv,i){
+    var r=cv.getBoundingClientRect(),w=Math.round(r.width*d),h=Math.round(r.height*d);
+    if(cv.width!==w||cv.height!==h){cv.width=w;cv.height=h}
+    var c=cv.getContext("2d");c.setTransform(1,0,0,1,0,0);c.clearRect(0,0,w,h);
+    c.filter=cv.dataset.hue?"hue-rotate("+cv.dataset.hue+"deg)":"none";
+    draw(c,w,h,t+i*.9,+cv.dataset.scale||1);
+  });
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
